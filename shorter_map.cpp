@@ -6,7 +6,8 @@
 
 using namespace std;
 
-void priority_dfs(map<int, vector<int>> &adjacency_list, map<int, bool> &visited, stack<int> &priority, int current)
+template <typename T>
+void priority_dfs(map<T, vector<T>> &adjacency_list, map<T, bool> &visited, stack<T> &priority, T current)
 {
     visited[current] = true;
     for (auto &neighbor : adjacency_list[current])
@@ -15,7 +16,8 @@ void priority_dfs(map<int, vector<int>> &adjacency_list, map<int, bool> &visited
     priority.push(current);
 }
 
-void dfs(map<int, vector<int>> &adjacency_list, map<int, bool> &visited, vector<int> &scc, int current)
+template <typename T>
+void dfs(map<T, vector<T>> &adjacency_list, map<T, bool> &visited, vector<T> &scc, T current)
 {
     visited[current] = true;
     scc.push_back(current);
@@ -24,37 +26,38 @@ void dfs(map<int, vector<int>> &adjacency_list, map<int, bool> &visited, vector<
             dfs(adjacency_list, visited, scc, neighbor);
 }
 
-vector<vector<int>> find_scc(vector<pair<int, int>> edge_list, int node_count)
+template <typename T>
+vector<vector<T>> find_scc(vector<pair<T, T>> edge_list, int node_count)
 {
     // Generate adjacency list
-    map<int, vector<int>> adjacency_list;
-    map<int, bool> visited;
+    map<T, vector<T>> adjacency_list;
+    map<T, bool> visited;
     for (auto &edge : edge_list) {
         adjacency_list[edge.first].push_back(edge.second);
         visited[edge.first] = false;
     }
 
     // Generate reverse pre-ordering
-    stack<int> priority;
+    stack<T> priority;
     for (auto &edge : adjacency_list)
         if (!visited[edge.first])
             priority_dfs(adjacency_list, visited, priority, edge.first);
 
     // Generate reverse adjacency list
-    map<int, vector<int>> reverse_adjacency_list;
+    map<T, vector<T>> reverse_adjacency_list;
     for (auto &edge : edge_list)
         reverse_adjacency_list[edge.second].push_back(edge.first);
 
     // Generate SCCs
-    vector<vector<int>> sccs;
+    vector<vector<T>> sccs;
     for (auto &edge : visited) edge.second = false;
     while (!priority.empty())
     {
-        int current = priority.top();
+        T current = priority.top();
         priority.pop();
         if (!visited[current])
         {
-            vector<int> scc;
+            vector<T> scc;
             dfs(reverse_adjacency_list, visited, scc, current);
             sccs.push_back(scc);
         }
@@ -73,12 +76,18 @@ int main()
     //     {3, 2},
     //     {4, 5}};
 
-    vector<pair<int, int>> edge_list = {
-        {8, 3},
-        {8, 4},
-        {2, 8},
-        {3, 2},
-        {4, 5}};
+    // vector<pair<int, int>> edge_list = {
+    //     {8, 3},
+    //     {8, 4},
+    //     {2, 8},
+    //     {3, 2},
+    //     {4, 5}};
+    vector<pair<char, char>> edge_list = {
+        {'a', 'c'},
+        {'a', 'd'},
+        {'b', 'a'},
+        {'c', 'b'},
+        {'d', 'e'}};
 
     auto sccs = find_scc(edge_list, node_count);
 
