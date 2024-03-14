@@ -1,27 +1,9 @@
 #include <iostream>
-#include <utility>
 #include <vector>
+#include <utility>
 #include <stack>
 
 using namespace std;
-
-void priority_dfs(vector<vector<int>> &adjacency_list, vector<bool> &visited, stack<int> &priority, int current)
-{
-    visited[current] = true;
-    for (auto &neighbor : adjacency_list[current])
-        if (!visited[neighbor])
-            priority_dfs(adjacency_list, visited, priority, neighbor);
-    priority.push(current);
-}
-
-void dfs(vector<vector<int>> &adjacency_list, vector<bool> &visited, vector<int> &scc, int current)
-{
-    visited[current] = true;
-    scc.push_back(current);
-    for (auto &neighbor : adjacency_list[current])
-        if (!visited[neighbor])
-            dfs(adjacency_list, visited, scc, neighbor);
-}
 
 vector<vector<int>> find_scc(vector<pair<int, int>> edge_list, int node_count)
 {
@@ -33,9 +15,30 @@ vector<vector<int>> find_scc(vector<pair<int, int>> edge_list, int node_count)
     // Generate reverse pre-ordering
     stack<int> priority;
     vector<bool> visited(node_count, false);
+    stack<int> dfs_stack;
     for (int i = 0; i < node_count; i++)
+    {
         if (!visited[i])
-            priority_dfs(adjacency_list, visited, priority, i);
+        {
+            dfs_stack.push(i);
+            while (!dfs_stack.empty())
+            {
+                int current = dfs_stack.top();
+                if (!visited[current])
+                {
+                    visited[current] = true;
+                    for (auto &neighbor : adjacency_list[current])
+                        if (!visited[neighbor])
+                            dfs_stack.push(neighbor);
+                }
+                else
+                {
+                    dfs_stack.pop();
+                    priority.push(current);
+                }
+            }
+        }
+    }
 
     // Generate reverse adjacency list
     vector<vector<int>> reverse_adjacency_list(node_count);
@@ -43,8 +46,8 @@ vector<vector<int>> find_scc(vector<pair<int, int>> edge_list, int node_count)
         reverse_adjacency_list[edge.second - 1].push_back(edge.first - 1);
 
     // Generate SCCs
-    vector<vector<int>> sccs;
     visited = vector<bool>(node_count, false);
+    vector<vector<int>> sccs;
     while (!priority.empty())
     {
         int current = priority.top();
@@ -52,7 +55,20 @@ vector<vector<int>> find_scc(vector<pair<int, int>> edge_list, int node_count)
         if (!visited[current])
         {
             vector<int> scc;
-            dfs(reverse_adjacency_list, visited, scc, current);
+            dfs_stack.push(current);
+            while (!dfs_stack.empty())
+            {
+                int current = dfs_stack.top();
+                dfs_stack.pop();
+                if (!visited[current])
+                {
+                    visited[current] = true;
+                    scc.push_back(current);
+                    for (auto &neighbor : reverse_adjacency_list[current])
+                        if (!visited[neighbor])
+                            dfs_stack.push(neighbor);
+                }
+            }
             sccs.push_back(scc);
         }
     }
