@@ -10,7 +10,7 @@ using namespace std;
 // --------------------------------- Algorithm ---------------------------------
 
 /**
- * Performs a depth-first search (DFS) on a graph represented by an adjacency list,
+ * A helper function that performs a depth-first search (DFS) on a graph represented by an adjacency list,
  * and pushes the visited nodes onto a stack in a priority order.
  *
  * @param adjacency_list The adjacency list representation of the graph.
@@ -18,20 +18,20 @@ using namespace std;
  * @param priority A stack to store the visited nodes in a priority order.
  * @param current The current node being visited.
  */
-void priority_dfs(vector<vector<int>> &adjacency_list,
-                  vector<bool> &visited,
-                  stack<int> &priority,
-                  int current)
+void _priority_dfs(vector<vector<int>> &adjacency_list,
+                   vector<bool> &visited,
+                   stack<int> &priority,
+                   int current)
 {
     visited[current] = true;
     for (auto &neighbor : adjacency_list[current])
         if (!visited[neighbor])
-            priority_dfs(adjacency_list, visited, priority, neighbor);
+            _priority_dfs(adjacency_list, visited, priority, neighbor);
     priority.push(current);
 }
 
 /**
- * Performs a depth-first search (DFS) on the given adjacency list,
+ * A helper function that performs a depth-first search (DFS) on the given adjacency list,
  * and generates a vector of nodes in the strongly connected component (SCC).
  *
  * @param adjacency_list The adjacency list representing the graph.
@@ -39,20 +39,20 @@ void priority_dfs(vector<vector<int>> &adjacency_list,
  * @param scc A vector to store the nodes in the strongly connected component (SCC).
  * @param current The current node being visited.
  */
-void dfs(vector<vector<int>> &adjacency_list,
-         vector<bool> &visited,
-         vector<int> &scc,
-         int current)
+void _dfs(vector<vector<int>> &adjacency_list,
+          vector<bool> &visited,
+          vector<int> &scc,
+          int current)
 {
     visited[current] = true;
     scc.push_back(current);
     for (auto &neighbor : adjacency_list[current])
         if (!visited[neighbor])
-            dfs(adjacency_list, visited, scc, neighbor);
+            _dfs(adjacency_list, visited, scc, neighbor);
 }
 
 /**
- * Finds the strongly connected components (SCCs) in a directed graph.
+ * The main function that finds the strongly connected components (SCCs) in a directed graph.
  *
  * @param edge_list The list of edges in the graph represented as pairs of nodes.
  * The first element of the pair is the source node and the second element is the destination node.
@@ -73,7 +73,7 @@ vector<vector<int>> find_scc(vector<pair<int, int>> edge_list,
     vector<bool> visited(node_count, false);
     for (int i = 1; i <= node_count; i++)
         if (!visited[i])
-            priority_dfs(adjacency_list, visited, priority, i);
+            _priority_dfs(adjacency_list, visited, priority, i);
 
     // Generate reverse adjacency list
     vector<vector<int>> reverse_adjacency_list(node_count + 1);
@@ -90,7 +90,7 @@ vector<vector<int>> find_scc(vector<pair<int, int>> edge_list,
         if (!visited[current])
         {
             vector<int> scc;
-            dfs(reverse_adjacency_list, visited, scc, current);
+            _dfs(reverse_adjacency_list, visited, scc, current);
             sccs.push_back(scc);
         }
     }
