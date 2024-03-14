@@ -1,6 +1,9 @@
 {
     "files.associations": {
         "*.cfg": "plaintext",
-        "iostream": "cpp"
+        "iostream": "cpp",
+        "ostream": "cpp",
+        "functional": "cpp",
+        "iomanip": "cpp"
     }
 }

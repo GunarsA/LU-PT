@@ -3,7 +3,11 @@
 #include <vector>
 #include <stack>
 
+#include <iomanip>
+
 using namespace std;
+
+// --------------------------------- Algorithm ---------------------------------
 
 /**
  * Performs a depth-first search (DFS) on a graph represented by an adjacency list,
@@ -14,7 +18,10 @@ using namespace std;
  * @param priority A stack to store the visited nodes in a priority order.
  * @param current The current node being visited.
  */
-void priority_dfs(vector<vector<int>> &adjacency_list, vector<bool> &visited, stack<int> &priority, int current)
+void priority_dfs(vector<vector<int>> &adjacency_list,
+                  vector<bool> &visited,
+                  stack<int> &priority,
+                  int current)
 {
     visited[current] = true;
     for (auto &neighbor : adjacency_list[current])
@@ -32,7 +39,10 @@ void priority_dfs(vector<vector<int>> &adjacency_list, vector<bool> &visited, st
  * @param scc A vector to store the nodes in the strongly connected component (SCC).
  * @param current The current node being visited.
  */
-void dfs(vector<vector<int>> &adjacency_list, vector<bool> &visited, vector<int> &scc, int current)
+void dfs(vector<vector<int>> &adjacency_list,
+         vector<bool> &visited,
+         vector<int> &scc,
+         int current)
 {
     visited[current] = true;
     scc.push_back(current);
@@ -50,7 +60,8 @@ void dfs(vector<vector<int>> &adjacency_list, vector<bool> &visited, vector<int>
  * @param node_count The total number of nodes in the graph.
  * @return A vector of vectors, where each inner vector represents a SCC.
  */
-vector<vector<int>> find_scc(vector<pair<int, int>> edge_list, int node_count)
+vector<vector<int>> find_scc(vector<pair<int, int>> edge_list,
+                             int node_count)
 {
     // Generate adjacency list
     vector<vector<int>> adjacency_list(node_count + 1);
@@ -87,107 +98,85 @@ vector<vector<int>> find_scc(vector<pair<int, int>> edge_list, int node_count)
     return sccs;
 }
 
-void print_mismatch(vector<vector<int>> &expected, vector<vector<int>> &got)
-{
-    cout << "Expected:" << endl;
-    for (auto &scc : expected)
-    {
-        for (auto &node : scc)
-            cout << node << " ";
-        cout << endl;
-    }
+// --------------------------------- Testing ---------------------------------
 
-    cout << "Got:" << endl;
-    for (auto &scc : got)
+/**
+ * Executes a test case for finding strongly connected components (SCC).
+ *
+ * @param id The ID of the test case.
+ * @param description The description of the test case.
+ * @param node_count The number of nodes in the graph.
+ * @param edge_list The list of edges in the graph represented as pairs of nodes.
+ * @param expected_output The expected output, which is a list of SCCs represented as vectors of nodes.
+ */
+void test_case(
+    int id,
+    string description,
+    int node_count,
+    vector<pair<int, int>> edge_list,
+    vector<vector<int>> expected_output)
+{
+    vector<vector<int>> output = find_scc(edge_list, node_count);
+    cout << "Test case " << id << " - " << setw(40) << left << description;
+    if (output == expected_output)
+        cout << "PASSED✅" << endl;
+    else
     {
-        for (auto &node : scc)
-            cout << node << " ";
+        cout << "FAILED❌" << endl;
+
+        cout << "Expected: ";
+        for (auto &scc : expected_output)
+        {
+            cout << "[";
+            for (auto &node : scc)
+                cout << node << " ";
+            cout << "]";
+        }
+        cout << endl;
+
+        cout << "Got: ";
+        for (auto &scc : output)
+        {
+            cout << "[";
+            for (auto &node : scc)
+                cout << node << " ";
+            cout << "]";
+        }
         cout << endl;
     }
 }
 
 int main()
 {
-    // --------------- Test case 1 ---------------
-    int node_count = 5;
-    vector<pair<int, int>> edge_list = {
-        {1, 3},
-        {1, 4},
-        {2, 1},
-        {3, 2},
-        {4, 5}};
+    test_case(1, "A graph with one multi-node SCC",
+              5,
+              {{1, 3}, {1, 4}, {2, 1}, {3, 2}, {4, 5}},
+              {{1, 2, 3}, {4}, {5}});
 
-    vector<vector<int>> sccs = find_scc(edge_list, node_count);
+    test_case(2, "A graph with multiple multi-node SCCs",
+              8,
+              {{1, 2}, {2, 3}, {2, 4}, {3, 1}, {3, 4}, {5, 6}, {5, 7}, {6, 8}, {7, 6}, {8, 7}},
+              {{5}, {6, 7, 8}, {1, 3, 2}, {4}});
 
-    vector<vector<int>> expected_sccs = {
-        {1, 2, 3},
-        {4},
-        {5}};
+    test_case(3, "A graph with no edges",
+              6,
+              {},
+              {{6}, {5}, {4}, {3}, {2}, {1}});
 
-    if (sccs == expected_sccs)
-        cout << "1st test case passed" << endl;
-    else
-    {
-        cout << "1st test case failed" << endl;
+    test_case(4, "A graph with disconnected components",
+              7,
+              {{1, 2}, {2, 3}, {3, 1}, {4, 5}, {5, 6}, {6, 4}},
+              {{7}, {4, 6, 5}, {1, 3, 2}});
 
-        print_mismatch(expected_sccs, sccs);
-    }
+    test_case(5, "A graph with no edges",
+              6,
+              {},
+              {{6}, {5}, {4}, {3}, {2}, {1}});
 
-    // --------------- Test case 2 ---------------
-    node_count = 8;
-    edge_list = {
-        {1, 2},
-        {2, 3},
-        {2, 4},
-        {3, 1},
-        {3, 4},
-        {5, 6},
-        {5, 7},
-        {6, 8},
-        {7, 6},
-        {8, 7}};
-
-    sccs = find_scc(edge_list, node_count);
-
-    expected_sccs = {
-        {5},
-        {6, 7, 8},
-        {1, 3, 2},
-        {4},
-    };
-
-    if (sccs == expected_sccs)
-        cout << "2nd test case passed" << endl;
-    else
-    {
-        cout << "2nd test case failed" << endl;
-
-        print_mismatch(expected_sccs, sccs);
-    }
-
-    // --------------- Test case 3 ---------------
-    node_count = 6;
-    edge_list = {};
-
-    sccs = find_scc(edge_list, node_count);
-
-    expected_sccs = {
-        {6},
-        {5},
-        {4},
-        {3},
-        {2},
-        {1}
-    };
-
-    if (sccs == expected_sccs)
-        cout << "3rd test case passed" << endl;
-    else
-    {
-        cout << "3rd test case failed" << endl;
-
-        print_mismatch(expected_sccs, sccs);
-    }
+    test_case(6, "A graph with no nodes",
+              0,
+              {},
+              {});
 
     return 0;
 }
