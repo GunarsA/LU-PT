@@ -1,9 +1,5 @@
 # LU testing course
 
-## Information
-
-Running `main.cpp` will execute self made unit tests for the function inside `function.h`.
-
 ## Google Test
 
 ### Requirements
