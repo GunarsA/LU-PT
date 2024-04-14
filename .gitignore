@@ -140,4 +140,4 @@ googlemock/gtest
 bazel-*
 
 # Ignore .vscode generated directories and files.
-# .vscode
+.vscode
