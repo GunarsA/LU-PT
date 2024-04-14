@@ -1,6 +1,7 @@
 #include "function.h"
 
 #include <gtest/gtest.h>
+
 namespace
 {
   // Tests a graph with one multi-node SCC
