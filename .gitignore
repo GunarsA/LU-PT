@@ -135,3 +135,6 @@ googlemock/gtest
 /CMakeCache.txt
 /ALL_BUILD.vcxproj.filters
 /ALL_BUILD.vcxproj
+
+# Ignore bazel generated directories and files.
+bazel-*

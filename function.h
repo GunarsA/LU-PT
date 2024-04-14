@@ -58,8 +58,8 @@ void _dfs(vector<vector<int>> &adjacency_list,
  * @param node_count The total number of nodes in the graph.
  * @return A vector of vectors, where each inner vector represents a SCC.
  */
-vector<vector<int>> find_scc(vector<pair<int, int>> edge_list,
-                             int node_count)
+vector<vector<int>> find_scc(int node_count,
+                             vector<pair<int, int>> edge_list)
 {
     // Generate adjacency list
     vector<vector<int>> adjacency_list(node_count + 1);
