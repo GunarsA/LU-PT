@@ -14,4 +14,4 @@ To run the tests, you need to run the following command in the root directory of
 bazel test --cxxopt=-std=c++14 --test_output=all //:scc
 ```
 
-<script src="https://asciinema.org/a/F0nT5wXvpjeTuK4bWZn42kay2.js" id="asciicast-654118" async="true"></script>
+[![asciicast](https://asciinema.org/a/F0nT5wXvpjeTuK4bWZn42kay2.svg)](https://asciinema.org/a/F0nT5wXvpjeTuK4bWZn42kay2)
