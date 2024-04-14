@@ -1,5 +1,13 @@
 # LU testing course
 
+This repository contains a C++ implementation that finds all strongly connected components (SCCs) in a directed graph using depth-first search (DFS). The implementation relies on a two-pass DFS algorithm to efficiently identify SCCs.
+
+## Features
+
+- Efficient computation of SCCs in directed graphs.
+- Utilizes a two-pass algorithm involving a normal and a reverse DFS.
+- Outputs each SCC as a vector of nodes.
+
 ## Google Test
 
 ### Requirements
